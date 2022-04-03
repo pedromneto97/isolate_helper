@@ -10,7 +10,7 @@ class BenchmarkHelper {
     this.iterations = 10,
   });
 
-  setup() {
+  void setup() {
     for (int i = 0; i < iterations; i++) {
       data.add(jsonEncode(fakeJsonData));
     }
