@@ -26,6 +26,7 @@ abstract class IsolateHelper<T, Q> {
         isolateFunction,
         debugName,
       ],
+      debugName: debugName,
     );
     _receivePortStream = _receivePort.listen((message) {
       if (message is SendPort) {
