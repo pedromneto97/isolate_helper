@@ -1,7 +1,7 @@
 name: isolate_helper
 description: Flutter library to help using long run isolates.
-version: 0.0.1
-homepage:
+version: 0.1.0
+homepage: https://github.com/pedromneto97/isolate_helper
 
 environment:
   sdk: ">=2.16.2 <3.0.0"
