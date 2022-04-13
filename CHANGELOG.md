@@ -7,6 +7,9 @@
 * Pause isolate when completer list is empty.
 * Add debug name to isolate.
 
+## Misc
+* Add example folder to .pubignore.
+
 [//]: # (e-0.2.0)
 
 
