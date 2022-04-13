@@ -27,6 +27,6 @@ class JsonDecoderHelper extends IsolateHelper<String, Map<String, dynamic>> {
         );
 }
 
-DecodedJsonType decode(String data) => jsonDecode(data);
+Map<String, dynamic> decode(String data) => jsonDecode(data);
 
 ```
