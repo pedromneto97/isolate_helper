@@ -13,6 +13,8 @@ abstract class IsolateHelper<T, Q> {
   late final SendPort _sendPort;
   final Completer<void> _initializationCompleter = Completer<void>();
   late final StreamSubscription<dynamic> _receivePortStream;
+  late final Isolate _isolate;
+  Capability? _resumeCapability;
 
   IsolateHelper({
     required IsolateHelperCallback<T, Q> isolateFunction,
@@ -27,20 +29,18 @@ abstract class IsolateHelper<T, Q> {
         debugName,
       ],
       debugName: debugName,
-    );
+    ).then((value) => _isolate = value);
     _receivePortStream = _receivePort.listen((message) {
       if (message is SendPort) {
         _sendPort = message;
         _initializationCompleter.complete();
-        return;
-      }
-
-      if (message is IsolateData) {
-        _waitingList[message.id]!.complete(message.data);
-        _waitingList.remove(message.id);
+      } else if (message is IsolateData) {
+        _waitingList.remove(message.id)!.complete(message.data);
       } else if (message is IsolateError) {
-        _waitingList[message.id]!.completeError(message.error);
-        _waitingList.remove(message.id);
+        _waitingList.remove(message.id)!.completeError(message.error);
+      }
+      if (_waitingList.isEmpty) {
+        _resumeCapability = _isolate.pause();
       }
     });
   }
@@ -53,6 +53,10 @@ abstract class IsolateHelper<T, Q> {
     final id = _currentId++;
     final completer = Completer<Q>();
     _waitingList[id] = completer;
+    if (_resumeCapability != null) {
+      _isolate.resume(_resumeCapability!);
+      _resumeCapability = null;
+    }
     _sendPort.send(
       IsolateData<T>(id: id, data: data),
     );
